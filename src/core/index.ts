@@ -1,0 +1,1 @@
+export { default as asyncHandler } from './core.async';
