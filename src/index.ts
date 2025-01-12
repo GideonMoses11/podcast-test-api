@@ -3,8 +3,6 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { podcastRoutes, userRoutes } from './routes';
-// import userRoutes from './routes/userRoutes';
-// import podcastRoutes from './routes/podcastRoutes';
 
 dotenv.config();
 
@@ -14,8 +12,6 @@ app.use(express.json());
 app.use(cors());
 
 // Routes
-// app.use('/api/users', userRoutes);
-// app.use('/api/podcasts', podcastRoutes);
 
 app.use('/v1/auth', userRoutes)
 app.use('/v1/podcasts', podcastRoutes)

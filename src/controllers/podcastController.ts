@@ -5,7 +5,6 @@ import { asyncHandler } from "../core";
 import { v4 as uuidv4 } from "uuid";
 import ffmpeg from 'fluent-ffmpeg';
 import fs from 'fs';
-// import fetch from 'node-fetch';
 import axios from 'axios';
 import { promisify } from 'util';
 import Podcast from "../models/Podcast";
@@ -322,7 +321,7 @@ export const trackListenEvent = asyncHandler(async (req, res, next) => {
   
   console.log('User in request:', req.user.userId);
   const { podcastId, currentTime } = req.body;
-  const userId = req.user.userId; // Assuming `req.user` contains authenticated user details
+  const userId = req.user.userId;
 
   try {
       // Find or create a podcast analytics record for the session
@@ -411,13 +410,10 @@ export const getGeminiAverageTiming = asyncHandler(async (req, res, next): Promi
       const start = new Date(startTime as string);
       const end = new Date(endTime as string);
 
-      // Use aggregation to calculate the average duration
       const [result] = await TimingLog.aggregate([
           { $match: { processName: "gemini", timestamp: { $gte: start, $lte: end } } },
           { $group: { _id: null, averageDuration: { $avg: "$duration" } } },
       ]);
-
-      // const averageTime = result?.averageDuration || 0;
 
       const averageTime = result?.averageDuration != null ? result.averageDuration.toFixed(2) : 0;
 
@@ -432,17 +428,13 @@ export const getPollyAverageTiming = asyncHandler(async (req, res, next) => {
   try {
     const { startTime, endTime } = req.query;
 
-    // Default to last 24 hours if no query params are provided
     const start = startTime ? new Date(startTime as string) : new Date(Date.now() - 24 * 60 * 60 * 1000);
     const end = endTime ? new Date(endTime as string) : new Date();
 
-    // Use aggregation to calculate the average duration
     const [result] = await TimingLog.aggregate([
       { $match: { processName: "polly_synthesis", timestamp: { $gte: start, $lte: end } } },
       { $group: { _id: null, averageDuration: { $avg: "$duration" } } },
     ]);
-
-    // const averageTime = result?.averageDuration || 0;
 
     const averageTime = result?.averageDuration != null ? result.averageDuration.toFixed(2) : 0;
 
